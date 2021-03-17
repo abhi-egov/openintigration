@@ -1,0 +1,82 @@
+{
+  "name": "iam-service",
+  "version": "1.0.3",
+  "description": "Identity and Access Management Service",
+  "main": "index.js",
+  "scripts": {
+    "watch": "yarn watch-scss & nodemon src/index.js --watch ./src",
+    "start:container": "yarn watch-scss & nodemon -L src/index.js --watch ./src",
+    "watch-scss": "yarn build --watch",
+    "watch-test": "jest --watch --runInBand",
+    "start": "node src/index.js",
+    "build": "node-sass-chokidar ./src/views/style -o ./src/views/style",
+    "lint": "eslint --fix src/ test/",
+    "task": "node",
+    "generate-keystore": "node -e 'require(\"./src/oidc/util/generate-keystore\").generateFile()'",
+    "generate-nodemon-env": "node -e 'require(\"./src/util/nodemon-env\").saveToFile()'",
+    "test": "yarn build && yarn lint && jest --silent=false --runInBand --forceExit",
+    "coverage": "jest --runInBand --coverage --forceExit",
+    "postinstall": "node ./src/app/dev/generateKeys.js",
+    "build:docker": "docker build -t openintegrationhub/iam:${VERSION} -f Dockerfile ."
+  },
+  "keywords": [
+    "OIDC",
+    "OAuth2",
+    "JWT",
+    "Authentication"
+  ],
+  "repository": "https://github.com/openintegrationhub/IAM",
+  "license": "Apache-2.0",
+  "author": "Basaas GmbH",
+  "dependencies": {
+    "@basaas/node-logger": "1.1.5",
+    "@openintegrationhub/event-bus": "*",
+    "base64-url": "2.3.3",
+    "body-parser": "1.19.0",
+    "connect-mongo": "3.2.0",
+    "cookie-parser": "1.4.5",
+    "cors": "2.8.5",
+    "dotenv": "8.2.0",
+    "express": "4.17.1",
+    "express-session": "1.17.1",
+    "jsonwebtoken": "8.5.1",
+    "lodash": "4.17.20",
+    "moment": "2.28.0",
+    "mongodb": "3.6.2",
+    "mongoose": "5.11.8",
+    "ms": "2.1.2",
+    "node-jose": "1.1.4",
+    "oidc-provider": "5.5.3",
+    "passport": "0.4.1",
+    "passport-jwt": "4.0.0",
+    "passport-local-mongoose": "6.0.1",
+    "pug": "3.0.0",
+    "request": "2.88.2",
+    "request-promise": "4.2.6",
+    "swagger-ui-express": "4.1.4",
+    "uuid": "8.3.0"
+  },
+  "devDependencies": {
+    "chai": "4.2.0",
+    "eslint": "5.13.0",
+    "eslint-config-airbnb-base": "13.1.0",
+    "eslint-plugin-import": "2.16.0",
+    "eslint-plugin-jasmine": "2.10.1",
+    "eslint-plugin-jest": "22.2.2",
+    "jest": "26.6.0",
+    "mongodb-memory-server": "6.7.6",
+    "node-forge": "0.10.0",
+    "node-sass-chokidar": "1.5.0",
+    "nodemon": "2.0.4",
+    "supertest": "4.0.2"
+  },
+  "xxjest": {
+    "globalSetup": "./test/setup.js",
+    "setupFilesAfterEnv": [
+      "./test/jest.setup.js"
+    ],
+    "testEnvironment": "node",
+    "verbose": true,
+    "silent": false
+  }
+}

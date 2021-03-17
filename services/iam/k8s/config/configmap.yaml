@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: iam
+  namespace: oih-dev-ns
+data:
+  IAM_ACC_ADMIN_USERNAME: admin@integration.walkingtree.tech
+  IAM_ACC_SERVICE_ACCOUNT_USERNAME: service-oih-iam@integration.walkingtree.tech
+  IAM_AUTH_TYPE: basic
+  IAM_BASEURL: "https://iam.integration.walkingtree.tech"
+  IAM_JWT_AUDIENCE: integration.walkingtree.tech
+  IAM_JWT_COOKIENAME: oih-iam
+  CORS_ORIGIN_WHITELIST: "integration.walkingtree.tech"
+  #IAM_ORIGINWHITELIST: "integration.walkingtree.tech,integration.walkingtree.tech"
+  IAM_PORT: "3099"
+  IAM_SERVICE_CLIENT_ID: 8ce00058-5f75-435f-9026-ad952480e15a
+  NODE_ENV: production
+  RABBITMQ_URI: "amqp://guest:guest@rabbitmq-service.oih-dev-ns.svc.cluster.local:5672"

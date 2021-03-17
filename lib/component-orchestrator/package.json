@@ -1,0 +1,33 @@
+{
+  "name": "@openintegrationhub/component-orchestrator",
+  "version": "1.2.5",
+  "description": "Orchestrates cluster resources",
+  "main": "src/index.js",
+  "scripts": {
+    "lint": "eslint src spec",
+    "pretest": "npm run lint",
+    "test": "mocha spec --recursive",
+    "start:dev": "node index.js | banyan"
+  },
+  "author": "Open Integration Hub",
+  "license": "APL-2.0",
+  "dependencies": {
+    "@openintegrationhub/event-bus": "*",
+    "jsonwebtoken": "8.5.1",
+    "lodash": "4.17.20",
+    "uuid": "8.3.0"
+  },
+  "devDependencies": {
+    "bunyan": "1.8.14",
+    "chai": "4.2.0",
+    "eslint": "6.8.0",
+    "eslint-plugin-mocha": "8.0.0",
+    "eslint-plugin-node": "11.1.0",
+    "mocha": "5.2.0",
+    "sinon": "9.0.3",
+    "sinon-chai": "3.5.0"
+  },
+  "engines": {
+    "node": ">=12"
+  }
+}

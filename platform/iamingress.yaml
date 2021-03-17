@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: oih-dev-ingress
+  namespace: oih-dev-ns
+  annotations:
+    kubernetes.io/ingress.class: "gce"
+spec:
+  rules:
+  - host: iam.wtt.tech
+    http:
+      paths:
+      - backend:
+          serviceName: iam
+          servicePort: 3099

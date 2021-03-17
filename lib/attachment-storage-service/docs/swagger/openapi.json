@@ -1,0 +1,327 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "Attachment Storage Service",
+    "description" : "Service for storing data objects",
+    "version" : "1.0.0"
+  },
+  "components" : {
+    "securitySchemes" : {
+      "bearerAuth" : {
+        "type" : "http",
+        "scheme" : "bearer",
+        "description" : "Token issued by IAM"
+      }
+    },
+    "schemas" : {
+      "ObjectId" : {
+        "type" : "string",
+        "description": "UUID version 1, 3, 4 or 5",
+        "example": "2c5ea4c0-4067-11e9-8bad-9b1deb4d3b7d"
+      },
+      "BatchDeleteRequest" : {
+        "type" : "object",
+        "properties" : {
+          "conditions" : {
+            "type" : "array",
+            "description": "Each element specifies a key and a value. An object has to have all specified keys with specified values in order to be deleted.",
+            "minLength" : 1,
+            "items" : {
+              "type" : "object",
+              "required": ["key", "value"],
+              "properties" : {
+                "key" : {
+                  "description" : "One of metadata keys",
+                  "enum": ["userId", "contentType", "contentLength"],
+                  "type" : "string"
+                },
+                "value" : {
+                  "type" : "string",
+                  "description": "Value of a metadata key"
+                }
+              }
+            }
+          }
+        }
+      },
+      "BatchDeleteResponse": {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "started", "running", "completed" ]
+          }
+        }
+      }
+    },
+    "parameters" : {
+      "ObjectId" : {
+        "name" : "id",
+        "description" : "Object identifier. UUID versions 1, 3, 4 and 5 are supported.",
+        "in" : "path",
+        "required" : true,
+        "schema" : {
+          "$ref" : "#/components/schemas/ObjectId"
+        }
+      }
+    },
+    "examples" : {
+      "json" : {
+        "summary" : "json object",
+        "value" : "{ \"some\": \"json\" }"
+      },
+      "xml" : {
+        "summary" : "xml object",
+        "value" : "<xml>some</xml>"
+      },
+      "text" : {
+        "summary" : "plain text object",
+        "value" : "plain text"
+      },
+      "csv" : {
+        "summary" : "csv object",
+        "value" : "c,s,v"
+      },
+      "tsv" : {
+        "summary" : "tsv object",
+        "value" : "t\t\ts\tv"
+      },
+      "binary" : {
+        "summary" : "binary object",
+        "value" : "BINARY DATA"
+      }
+    },
+    "requestBodies" : {
+      "Object" : {
+        "required" : true,
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "type" : "object"
+            },
+            "example" : {
+              "$ref" : "#/components/examples/json/value"
+            }
+          },
+          "application/xml" : {
+            "example" : {
+              "$ref" : "#/components/examples/xml/value"
+            }
+          },
+          "text/plain" : {
+            "example" : {
+              "$ref" : "#/components/examples/text/value"
+            }
+          },
+          "text/csv" : {
+            "example" : {
+              "$ref" : "#/components/examples/csv/value"
+            }
+          },
+          "text/tsv" : {
+            "example" : {
+              "$ref" : "#/components/examples/tsv/value"
+            }
+          },
+          "application/octet-stream" : {
+            "example" : {
+              "$ref" : "#/components/examples/binary/value"
+            }
+          }
+        }
+      }
+    },
+    "responses" : {
+      "ObjectNotFound" : {
+        "description" : "Object not found"
+      },
+      "TooManyObjectRequests" : {
+        "description" : "Too many requests"
+      },
+      "ObjectTooLarge" : {
+        "description" : "Object is too large"
+      }
+    },
+    "headers" : {
+      "ObjectLength" : {
+        "description" : "Object length in bytes",
+        "schema" : {
+          "type" : "integer"
+        }
+      }
+    }
+  },
+  "security" : [ {
+    "bearerAuth" : [ ]
+  } ],
+  "paths" : {
+    "/objects/{id}" : {
+      "get" : {
+        "summary" : "Get object by id",
+        "description" : "Returns one object",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/ObjectId"
+        }],
+        "responses" : {
+          "200" : {
+            "headers" : {
+              "Content-Length" : {
+                "$ref" : "#/components/headers/ObjectLength"
+              }
+            },
+            "description" : "Successfully got an object",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object"
+                },
+                "example" : {
+                  "$ref" : "#/components/examples/json/value"
+                }
+              },
+              "application/xml" : {
+                "example" : {
+                  "$ref" : "#/components/examples/xml/value"
+                }
+              },
+              "text/plain" : {
+                "example" : {
+                  "$ref" : "#/components/examples/text/value"
+                }
+              },
+              "text/csv" : {
+                "example" : {
+                  "$ref" : "#/components/examples/csv/value"
+                }
+              },
+              "text/tsv" : {
+                "example" : {
+                  "$ref" : "#/components/examples/tsv/value"
+                }
+              },
+              "application/octet-stream" : {
+                "example" : {
+                  "$ref" : "#/components/examples/binary/value"
+                }
+              }
+            }
+          },
+          "404" : {
+            "$ref" : "#/components/responses/ObjectNotFound"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/TooManyObjectRequests"
+          }
+        }
+      },
+      "put" : {
+        "summary" : "Create an object",
+        "description" : "Creates an object with user-generated ID.",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/ObjectId"
+        }],
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/Object"
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Successfully created an object"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/ObjectNotFound"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/TooManyObjectRequests"
+          },
+          "409" : {
+            "description" : "Object already exists"
+          },
+          "415" : {
+            "description" : "Object type not supported or missing"
+          },
+          "413" : {
+            "$ref" : "#/components/responses/ObjectTooLarge"
+          }
+        }
+      },
+      "delete" : {
+        "summary" : "Delete an object",
+        "description" : "Delete entire object",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/ObjectId"
+        }],
+        "responses" : {
+          "204" : {
+            "description" : "Successfully deleted an object"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/ObjectNotFound"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/TooManyObjectRequests"
+          }
+        }
+      }
+    },
+    "/batch/delete" : {
+      "post" : {
+        "summary" : "Create request for object batch deletion",
+        "description" : "Batch deletion is an async process, so we need to start and wait",
+        "requestBody" : {
+          "required" : true,
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BatchDeleteRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "202" : {
+            "description" : "Query started",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BatchDeleteResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/batch/delete/{id}" : {
+      "get" : {
+        "summary" : "Get batch delete request status",
+        "parameters" : [ {
+          "name" : "id",
+          "required" : true,
+          "description" : "Query id",
+          "in" : "path",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Query found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BatchDeleteResponse"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Query not found"
+          }
+        }
+      }
+    }
+  }
+}

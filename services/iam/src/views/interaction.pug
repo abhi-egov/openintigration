@@ -1,0 +1,7 @@
+extends layout.pug
+
+block content
+  form(name='refresh' autocomplete='off', action=`/${conf.oidc.base}/interaction/${details.uuid}/confirm`, method='post')
+    input(type='hidden', name='uuid', value=details.uuid)
+    script.
+      document.forms['refresh'].submit()
